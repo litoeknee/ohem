@@ -237,7 +237,7 @@ class OHEMDataLayer(caffe.Layer):
             bbox_outside_weights = None
 
         flt_min = np.finfo(float).eps
-        # classification loss
+        # classification loss, for each class, 20 dim
         loss = [ -1 * np.log(max(x, flt_min)) \
             for x in [cls_prob[i,label] for i, label in enumerate(labels)]]
 
@@ -252,7 +252,7 @@ class OHEMDataLayer(caffe.Layer):
                 else:
                     return abs(x) - 0.5
 
-            bbox_loss = np.zeros(labels.shape[0])
+            bbox_loss = np.zeros(labels.shape[0]) # 20 dim array
             for i in np.where(labels > 0 )[0]:
                 indices = np.where(bbox_inside_weights[i,:] != 0)[0]
                 bbox_loss[i] = sum(bbox_outside_weights[i,indices] * [smoothL1(x) \
